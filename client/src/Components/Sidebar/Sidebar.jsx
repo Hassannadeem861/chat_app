@@ -2,24 +2,30 @@ import React, { useState, useEffect } from "react";
 import { handleLogout, getAllUsers } from "../../Services/Api.js";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const Sidebar = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const [searchTerm, setSearchTerm] = useState("");
-  const [users, setusers] = useState([]);
+  const [users, setUsers] = useState([]);
+  const token = useSelector((state) => state.auth.token);
 
   useEffect(() => {
     const fetchUsers = async () => {
-      const users = await getAllUsers(dispatch);
-      setusers(users);
+      const allUsers = await getAllUsers(dispatch, token);
+      console.log("allUsers: ", allUsers);
+      if (allUsers) {
+        setUsers(allUsers);
+      }
     };
     fetchUsers();
   }, []);
 
   return (
     <div className="w-1/3 border-r border-gray-300 bg-[#F6F5F4] flex flex-col h-screen">
+
       {/* Header with Search */}
       <div className="p-3 bg-[#F6F5F4]">
         <div className="flex items-center bg-white rounded-full px-4 py-2 w-full">

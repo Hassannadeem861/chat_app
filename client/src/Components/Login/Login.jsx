@@ -2,6 +2,9 @@ import React, { useState } from "react";
 import { handleLogin } from "../../Services/Api";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
+import axios from "axios";
+import { setAuthUser } from "../../redux/authSlice.jsx";
 
 const Login = () => {
 
@@ -20,9 +23,10 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     handleLogin(form, dispatch, navigate);
   };
+
+
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-base-200">

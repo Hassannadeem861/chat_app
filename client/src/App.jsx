@@ -1,37 +1,35 @@
-import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import HomePage from '../src/Components/Home/Home.jsx'
 import Register from '../src/Components/Signup/Signup.jsx'
 import Login from '../src/Components/Login/Login.jsx'
 import PrivateRoute from '../src/Components/PrivateRoute/PrivateRoute.jsx';
 
 
-const router = createBrowserRouter([
-  {
-    path: '/',
-    element: (
-      <PrivateRoute>
-        <HomePage />
-      </PrivateRoute>
-    ),
-  },
 
-  {
-    path: '/register',
-    element: <Register />
-  },
-
-  {
-    path: '/login',
-    element: <Login />
-  },
-
-])
 
 const App = () => {
   return (
-    <div>
-      <RouterProvider router={router} />
-    </div>
+    <>
+
+      <BrowserRouter>
+
+        <Routes>
+
+          <Route path="/register" element={<Register />} />
+          <Route path="/login" element={<Login />} />
+
+          {/* Secure route for home page */}
+          <Route element={<PrivateRoute />}>
+            <Route path="/" element={<HomePage />} />
+          </Route>
+
+        </Routes>
+
+      </BrowserRouter>
+
+    </>
+
+
   )
 }
 

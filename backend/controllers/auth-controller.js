@@ -70,10 +70,10 @@ const login = async (req, res) => {
     return res
       .status(200)
       .cookie("token", token, {
-        maxage: 15 * 24 * 60 * 60 * 1000,
-        sameSite: "none",
         httpOnly: true,
-        secure: true,
+        secure: true, // set only in production with HTTPS
+        sameSite: "Lax",
+        maxAge: 24 * 60 * 60 * 1000,
       })
       .json({ message: `Successfully Logged In`, user, token });
   } catch (error) {
@@ -118,9 +118,12 @@ const getUser = async (req, res) => {
   try {
     const loginUser = req.id;
     const users = await Auth.find({ _id: { $ne: loginUser } });
+    if (!users || users.length === 0) {
+      return res.status(404).json({ message: "No users found" });
+    }
     return res.status(200).json({
       message: "Get all Login user",
-      users,
+      users
     });
   } catch (error) {
     return res.status(500).json({

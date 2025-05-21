@@ -5,11 +5,11 @@ import dotenv from "dotenv";
 dotenv.config();
 
 export const authMiddleware = async (req, res, next) => {
-  const token = req.cookies?.token || req.header("authrization");
+  const token = req.header("Authorization") || req.cookies?.token;
 
   if (!token) {
     return res
-      .status(200)
+      .status(400)
       .json({ message: "Please login to access this resource" });
   }
 

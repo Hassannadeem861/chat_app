@@ -1,10 +1,10 @@
 import toast from "react-hot-toast";
 import { logout, setAuthUser, setUsers } from "../redux/authSlice.jsx";
 import axios from "axios";
-import { persistor } from "../redux/store.js"; // path sahi se adjust karo
+import { persistor } from "../redux/store.js";
 
 
-const baseUrl = "http://localhost:3000";
+const baseUrl = "http://localhost:5000";
 
 export const handleSignup = async (form, navigate) => {
   try {
@@ -15,18 +15,21 @@ export const handleSignup = async (form, navigate) => {
       navigate("/login");
     }
   } catch (error) {
-    console.error(error);
     toast.error(error.response?.data?.message);
   }
 };
 
 export const handleLogin = async (form, dispatch, navigate) => {
   try {
-    let response = await axios.post(`${baseUrl}/api/v1/auth/login`, form);
+
+    const response = await axios.post(`${baseUrl}/api/v1/auth/login`, form);
 
     if (response.status === 200) {
       toast.success(response.data.message);
-      dispatch(setAuthUser(response.data));
+      dispatch(setAuthUser({
+        user: response.data.user,
+        token: response.data.token
+      }));
       navigate("/");
     }
   } catch (error) {
@@ -34,15 +37,22 @@ export const handleLogin = async (form, dispatch, navigate) => {
   }
 };
 
-export const getAllUsers = async (dispatch) => {
+
+export const getAllUsers = async (dispatch, token) => {
   try {
     const response = await axios.get(`${baseUrl}/api/v1/auth/get-all-users`, {
-      withCredentials: true,
+      // withCredentials: true
+      headers: {
+        Authorization: `${token}`,
+      },
     });
-    dispatch(setUsers(response.data.users));
-    return response.data.users;
-    // Save Store
-  } catch {
+    console.log("response: ", response.data);
+    dispatch(setUsers({
+      user: response?.data?.users,
+    }));
+    return response?.data?.users || [];
+  } catch (error) {
+    console.log("error: ", error.message);
     toast.error(error.response?.data?.message);
   }
 };
