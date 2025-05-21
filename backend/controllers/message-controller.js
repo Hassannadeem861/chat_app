@@ -8,7 +8,7 @@ export const sendMessage = async (req, res) => {
         const senderId = req.id;
         const { receiverId } = req.params
         const { message } = req.body;
-        
+
         if (!receiverId || !message) {
             return res.status(400).json({ message: "Please provide receiverId and message" });
         }
@@ -59,11 +59,13 @@ export const getMessages = async (req, res) => {
 
         let gotConversation = await Conversation.findOne({
             participants: { $all: [senderId, receiverId] }
-        }).populate("participants").populate("messages")
+        }).populate("messages")
+        // .populate("participants")
+
 
         return res.status(201).json({
             message: "Message fetched successfully",
-            gotConversation
+            messages: gotConversation.messages
         })
     } catch (error) {
         return res.status(500).json({ message: 'Error getting message', error: error.message });

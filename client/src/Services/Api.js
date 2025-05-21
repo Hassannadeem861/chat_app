@@ -1,5 +1,6 @@
 import toast from "react-hot-toast";
 import { logout, setAuthUser, setUsers } from "../redux/authSlice.jsx";
+import { setMessage } from "../redux/messageSlice.jsx";
 import axios from "axios";
 import { persistor } from "../redux/store.js";
 
@@ -37,16 +38,15 @@ export const handleLogin = async (form, dispatch, navigate) => {
   }
 };
 
-
 export const getAllUsers = async (dispatch, token) => {
   try {
+    // axios.defaults.withCredentials = true
     const response = await axios.get(`${baseUrl}/api/v1/auth/get-all-users`, {
       // withCredentials: true
       headers: {
         Authorization: `${token}`,
       },
     });
-    console.log("response: ", response.data);
     dispatch(setUsers({
       user: response?.data?.users,
     }));
@@ -68,5 +68,27 @@ export const handleLogout = async (navigate, dispatch) => {
     }
   } catch (error) {
     toast.error(error.response?.data?.message || "Logout failed");
+  }
+};
+
+export const getAllMessages = async (selectedUser, token, dispatch) => {
+  try {
+    // axios.defaults.withCredentials = true
+    const response = await axios.get(`${baseUrl}/api/v1/message/get-messages/${selectedUser?._id}`, {
+      // withCredentials: true
+      headers: {
+        Authorization: `${token}`,
+      },
+    });
+    console.log("response: ", response);
+
+    dispatch(setMessage({
+      message: response?.data?.messages,
+    }))
+
+    return response?.data?.messages || [];
+  } catch (error) {
+    console.log("error: ", error.message);
+    toast.error(error.response?.data?.message);
   }
 };

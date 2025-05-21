@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { handleLogout, getAllUsers } from "../../Services/Api.js";
+import { handleLogout, getAllUsers, getAllMessages } from "../../Services/Api.js";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { setSelectedUser } from "../../redux/authSlice.jsx";
 
 const Sidebar = () => {
   const navigate = useNavigate();
@@ -12,16 +13,24 @@ const Sidebar = () => {
   const [users, setUsers] = useState([]);
   const token = useSelector((state) => state.auth.token);
 
+  // get all users
   useEffect(() => {
     const fetchUsers = async () => {
       const allUsers = await getAllUsers(dispatch, token);
-      console.log("allUsers: ", allUsers);
       if (allUsers) {
         setUsers(allUsers);
       }
     };
     fetchUsers();
   }, []);
+
+  // get single user data
+  const selectedUserHandler = (users) => {
+    // console.log(users);
+    dispatch(setSelectedUser({
+      users
+    }))
+  }
 
   return (
     <div className="w-1/3 border-r border-gray-300 bg-[#F6F5F4] flex flex-col h-screen">
@@ -59,6 +68,7 @@ const Sidebar = () => {
           <div
             key={user._id}
             className="flex items-center p-3 border-b border-gray-200 hover:bg-gray-100 cursor-pointer bg-white"
+            onClick={() => selectedUserHandler(user)}
           >
             <img
               src={user.profilePicture}
@@ -99,7 +109,9 @@ const Sidebar = () => {
           Logout
         </button>
       </div>
+
     </div>
+
   );
 };
 
