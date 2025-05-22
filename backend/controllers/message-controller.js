@@ -59,8 +59,14 @@ export const getMessages = async (req, res) => {
 
         let gotConversation = await Conversation.findOne({
             participants: { $all: [senderId, receiverId] }
-        }).populate("messages")
-        // .populate("participants")
+        }).populate({
+            path: "messages",
+            options: { sort: { createdAt: 1 } }
+        });
+
+        if (!gotConversation) {
+            return res.status(404).json({ message: "No conversation found between users." });
+        }
 
 
         return res.status(201).json({
@@ -68,6 +74,8 @@ export const getMessages = async (req, res) => {
             messages: gotConversation.messages
         })
     } catch (error) {
+        console.error("Error in getMessages:", error.message);
         return res.status(500).json({ message: 'Error getting message', error: error.message });
+
     }
 }

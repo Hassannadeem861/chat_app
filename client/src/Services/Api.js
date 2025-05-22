@@ -72,6 +72,9 @@ export const handleLogout = async (navigate, dispatch) => {
 };
 
 export const getAllMessages = async (selectedUser, token, dispatch) => {
+  console.log("selectedUser: ", selectedUser);
+
+  
   try {
     // axios.defaults.withCredentials = true
     const response = await axios.get(`${baseUrl}/api/v1/message/get-messages/${selectedUser?._id}`, {
@@ -89,6 +92,6 @@ export const getAllMessages = async (selectedUser, token, dispatch) => {
     return response?.data?.messages || [];
   } catch (error) {
     console.log("error: ", error.message);
-    toast.error(error.response?.data?.message);
+    // toast.error(error?.response?.data?.message);
   }
 };
