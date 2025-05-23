@@ -72,9 +72,9 @@ export const handleLogout = async (navigate, dispatch) => {
 };
 
 export const getAllMessages = async (selectedUser, token, dispatch) => {
-  console.log("selectedUser: ", selectedUser);
+  // console.log("selectedUser: ", selectedUser);
 
-  
+
   try {
     // axios.defaults.withCredentials = true
     const response = await axios.get(`${baseUrl}/api/v1/message/get-messages/${selectedUser?._id}`, {
@@ -83,7 +83,7 @@ export const getAllMessages = async (selectedUser, token, dispatch) => {
         Authorization: `${token}`,
       },
     });
-    console.log("response: ", response);
+    // console.log("response: ", response);
 
     dispatch(setMessage({
       message: response?.data?.messages,
@@ -95,3 +95,27 @@ export const getAllMessages = async (selectedUser, token, dispatch) => {
     // toast.error(error?.response?.data?.message);
   }
 };
+
+export const SendMessage = async (selectedUser, message, token, dispatch) => {
+  console.log("selectedUser: ", selectedUser._id);
+  console.log("message: ", message);
+  console.log("token: ", token);
+
+
+  try {
+    const response = await axios.post(`${baseUrl}/api/v1/message/send-message/${selectedUser?._id}`, { message }, {
+
+      headers: {
+        Authorization: `${token}`,
+      },
+    });
+    console.log("response: ", response?.data);
+    // dispatch(setMessage({
+    //   // ...selectedUserMessage,
+    //    message: response?.data.newMessage
+    // }))
+    return response?.data.newMessage || []
+  } catch (error) {
+    console.log("error: ", error.message);
+  }
+}

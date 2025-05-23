@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { getAllMessages } from "../../Services/Api.js";
+import { getAllMessages, SendMessage } from "../../Services/Api.js";
 import { useSelector } from "react-redux";
 import { useDispatch } from 'react-redux'
 
@@ -10,7 +10,7 @@ const Message = () => {
   const selectedUser = useSelector((state) => state.auth.selectedUser?.users);
   const currentUserId = useSelector((state) => state.auth.user._id);
   const selectedUserMessage = useSelector((state) => state?.message?.message?.message);
-  console.log("selectedUserMessage: ", selectedUserMessage);
+  // console.log("selectedUserMessage: ", selectedUserMessage);
 
   useEffect(() => {
     const fetchMessages = async () => {
@@ -29,9 +29,11 @@ const Message = () => {
 
   const [newMessage, setNewMessage] = useState('')
 
-  const handleSendMessage = () => {
-    console.log("newMessage: ", newMessage);
-
+  const handleSendMessage = async () => {
+  const res =  await SendMessage(selectedUser, newMessage, token, dispatch);
+  console.log("res: ", res);
+  
+    setNewMessage('')
   }
 
   return (
@@ -90,7 +92,7 @@ const Message = () => {
           className="flex-1 border border-gray-300 rounded-l-lg px-4 py-2 outline-none"
           value={newMessage}
           onChange={(e) => setNewMessage(e.target.value)}
-          onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
+        onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
         />
         <button
           className="bg-blue-500 text-white px-4 py-2 rounded-r-lg hover:bg-blue-600"
